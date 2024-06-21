@@ -1,40 +1,27 @@
 package Exercise5;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-import java.util.Spliterator;
-import java.util.Spliterators;
 
 public class Main {
     public static <T> Stream<T> zip(Stream<T> first, Stream<T> second) {
-        Iterator<T> firstIterator = first.iterator();
-        Iterator<T> secondIterator = second.iterator();
+        List<T> firstList = first.collect(Collectors.toList());
+        List<T> secondList = second.collect(Collectors.toList());
 
-        Iterator<T> zippedIterator = new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return firstIterator.hasNext() && secondIterator.hasNext();
-            }
+        int minSize = Math.min(firstList.size(), secondList.size());
 
-            @Override
-            public T next() {
-                if (!hasNext()) {
-                    throw new IllegalStateException("No more elements");
-                }
-                return firstIterator.next();
-            }
-        };
-
-        Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(zippedIterator, Spliterator.ORDERED);
-        return StreamSupport.stream(spliterator, false);
+        return IntStream.range(0, minSize)
+                .boxed()
+                .flatMap(i -> Stream.of(firstList.get(i), secondList.get(i)));
     }
 
     public static void main(String[] args) {
-        Stream<Integer> first = Stream.of(1, 3, 5, 7, 9);
-        Stream<Integer> second = Stream.of(2, 4, 6, 8);
+        Stream<String> first = Stream.of("a", "b", "c");
+        Stream<String> second = Stream.of("1", "2", "3", "4");
 
-        Stream<Integer> zippedStream = zip(first, second);
-        zippedStream.forEach(System.out::println);
+        Stream<String> result = zip(first, second);
+        result.forEach(System.out::println); // виведе "a", "1", "b", "2", "c", "3"
     }
 }
