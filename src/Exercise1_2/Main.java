@@ -5,7 +5,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
-    public static List<String> getNamesAtOddIndices(List<String> names) {
+    public static String getNamesAtOddIndices(List<String> names) {
+        return IntStream.range(0, names.size())
+                .filter(i -> i % 2 == 0)
+                .mapToObj(i -> (i + 1) + ". " + names.get(i))
+                .collect(Collectors.joining(", "));
+    }
+
+    public static List<String> getOddIndexedNames(List<String> names) {
         return IntStream.range(0, names.size())
                 .filter(i -> i % 2 == 0)
                 .mapToObj(names::get)
@@ -22,9 +29,10 @@ public class Main {
     public static void main(String[] args) {
         List<String> names = List.of("Ivan", "Peter", "John", "Mary", "Sophia");
 
-        List<String> oddIndexedNames = getNamesAtOddIndices(names);
-        System.out.println(oddIndexedNames);
+        String oddIndexedNamesFormatted = getNamesAtOddIndices(names);
+        System.out.println(oddIndexedNamesFormatted);
 
+        List<String> oddIndexedNames = getOddIndexedNames(names);
         List<String> processedNames = processNames(oddIndexedNames);
         System.out.println(processedNames);
     }
